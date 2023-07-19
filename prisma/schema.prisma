@@ -1,0 +1,157 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User {
+  id               Int               @id @default(autoincrement())
+  email            String            @unique
+  password         String?
+  salt             String?
+  name             String
+  avatar           String?
+  role             Role?             @default(USER)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt
+  Comments         Comment[]
+  CommentReactions CommentReaction[]
+  Blog             Blog[]
+  BlogReactions    BlogReaction[]
+  ReadLaters       ReadLater[]
+
+  @@map("users")
+}
+
+model Token {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  isAdmin   Boolean  @default(false) @map("is_admin")
+  userId    Int      @map("user_id")
+  expiredAt DateTime @map("expired_at")
+  userAgent String?  @map("user_agent")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+  createdBy Int?     @map("created_by")
+  updatedBy Int?     @map("updated_by")
+
+  @@map("tokens")
+}
+
+model RecoverToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int      @map("user_id")
+  expiredAt DateTime @map("expired_at")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+  createdBy Int?     @map("created_by")
+  updatedBy Int?     @map("updated_by")
+
+  @@map("recover_tokens")
+}
+
+model Blog {
+  id            Int            @id @default(autoincrement())
+  title         String         @db.VarChar(30)
+  content       String         @db.LongText
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt
+  likeCount     Int            @default(0)
+  disLikeCount  Int            @default(0)
+  status        Boolean        @default(false)
+  viewCount     Int            @default(0)
+  BlogReactions BlogReaction[]
+  Comments      Comment[]
+  KeywordMaps   KeywordMap[]
+  User          User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ReadLaters    ReadLater[]
+  userId        Int?
+
+  @@map("blogs")
+}
+
+model BlogReaction {
+  id      Int      @id @default(autoincrement())
+  isLiked Boolean?
+  User    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int?
+  Blog    Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId  Int?
+
+  @@unique([userId, blogId])
+  @@map("blog_reactions")
+}
+
+model Comment {
+  id               Int               @id @default(autoincrement())
+  User             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int?
+  likeCount        Int               @default(0) @map("like_count")
+  content          String            @db.Text
+  CommentReactions CommentReaction[]
+  Blog             Blog?             @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId           Int?
+
+  @@map("comments")
+}
+
+model CommentReaction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updateAt  DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int?
+  Comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId Int?
+
+  @@unique([userId, commentId])
+  @@map("comment_reactions")
+}
+
+model Keyword {
+  id          Int          @id @default(autoincrement())
+  content     String       @db.VarChar(100)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt
+  KeywordMaps KeywordMap[]
+
+  @@unique(content)
+
+  @@map("keywords")
+}
+
+model KeywordMap {
+  id        Int      @id @default(autoincrement())
+  Blog      Blog?    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId    Int?
+  Keyword   Keyword? @relation(fields: [keywordId], references: [id], onDelete: Cascade)
+  keywordId Int?
+
+  @@unique([blogId, keywordId])
+  @@map("Keyword_maps")
+}
+
+model ReadLater {
+  id        Int      @id @default(autoincrement())
+  User   User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int?
+  Blog   Blog? @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  blogId Int?
+
+  @@unique([userId,blogId])
+  @@map("read_laters")
+}

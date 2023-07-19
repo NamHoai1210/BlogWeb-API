@@ -1,0 +1,595 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/v1/auth/google": {
+      "get": {
+        "operationId": "AuthController_googleAuth",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/v1/auth/google/redirect": {
+      "get": {
+        "operationId": "AuthController_googleAuthRedirect",
+        "parameters": [],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "account is not valid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          },
+          "500": {
+            "description": "generate token exception",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/v1/auth/refresh-token": {
+      "post": {
+        "operationId": "AuthController_refreshToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RefreshTokenDto" }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "token is not valid",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          },
+          "500": {
+            "description": "generate token exception",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_recover",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecoverPasswordDTO" }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "generate token exception",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/confirm": {
+      "get": {
+        "operationId": "AuthController_verifyMailToken",
+        "parameters": [],
+        "responses": {
+          "500": {
+            "description": "generate token exception",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/update-password": {
+      "post": {
+        "operationId": "AuthController_updatePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdatePasswordDto" }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "update password",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/me": {
+      "get": {
+        "operationId": "UsersController_findMe",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      },
+      "patch": {
+        "operationId": "UsersController_updateMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/v1/users/avatar/me": {
+      "delete": {
+        "operationId": "UsersController_DeleteAvatar",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/v1/users": {
+      "get": {
+        "operationId": "UsersController_findAll",
+        "parameters": [
+          {
+            "name": "userType",
+            "required": true,
+            "in": "query",
+            "example": "USER",
+            "schema": { "enum": ["ADMIN", "USER"], "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/v1/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      },
+      "patch": {
+        "operationId": "UsersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      },
+      "delete": {
+        "operationId": "UsersController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/v1/users/change-password": {
+      "post": {
+        "operationId": "UsersController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChangePasswordDto" }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "Change password exception",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HttpExceptionEntity" }
+              }
+            }
+          }
+        },
+        "tags": ["User"]
+      }
+    },
+    "/v1/users/avatar": {
+      "post": {
+        "operationId": "UsersController_uploadFile",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["User"]
+      }
+    },
+    "/v1/blog": {
+      "get": {
+        "operationId": "BlogController_findAll",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      },
+      "post": {
+        "operationId": "BlogController_createBlog",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBlogDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } }
+      }
+    },
+    "/v1/blog/{id}": {
+      "get": {
+        "operationId": "BlogController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      },
+      "patch": {
+        "operationId": "BlogController_editBlog",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBlogDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } }
+      },
+      "delete": {
+        "operationId": "BlogController_deleteBlog",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/v1/blog/me/{id}": {
+      "get": {
+        "operationId": "BlogController_findMe",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } }
+      }
+    },
+    "/v1/comment": {
+      "post": {
+        "operationId": "CommentController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCommentDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["Comment"]
+      }
+    },
+    "/v1/comment/{id}": {
+      "get": {
+        "operationId": "CommentController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Comment"]
+      },
+      "patch": {
+        "operationId": "CommentController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCommentDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["Comment"]
+      },
+      "delete": {
+        "operationId": "CommentController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Comment"]
+      }
+    },
+    "/v1/comment/{id}/like": {
+      "post": {
+        "operationId": "CommentController_like",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["Comment"]
+      }
+    }
+  },
+  "info": {
+    "title": "Blog Web",
+    "description": "The API",
+    "version": "2.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "example": "user@example.com" },
+          "password": { "type": "string", "example": "password" }
+        },
+        "required": ["email", "password"]
+      },
+      "HttpExceptionEntity": { "type": "object", "properties": {} },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "example": "User" },
+          "email": { "type": "string", "example": "user@example.com" },
+          "password": { "type": "string", "example": "password" }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Refresh Token",
+            "example": "d50a44bc-5249-4406-83b1-afdea1887243"
+          }
+        },
+        "required": ["token"]
+      },
+      "RecoverPasswordDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "email",
+            "example": "user@example.com"
+          }
+        },
+        "required": ["email"]
+      },
+      "UpdatePasswordDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "email",
+            "example": "abc@gmail.com"
+          },
+          "token": {
+            "type": "string",
+            "description": "Token",
+            "example": "d50a44bc-5249-4406-83b1-afdea1887243"
+          },
+          "password": {
+            "type": "string",
+            "description": "password",
+            "example": "12345678"
+          },
+          "passwordConfirm": {
+            "type": "string",
+            "description": "password confirm",
+            "example": "12345678"
+          }
+        },
+        "required": ["email", "token", "password", "passwordConfirm"]
+      },
+      "UpdateUserDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string" } },
+        "required": ["name"]
+      },
+      "ChangePasswordDto": {
+        "type": "object",
+        "properties": {
+          "oldPassword": { "type": "string" },
+          "newPassword": { "type": "string" }
+        },
+        "required": ["oldPassword", "newPassword"]
+      },
+      "CreateBlogDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Blog Title",
+            "example": "Blog Title"
+          },
+          "content": {
+            "type": "string",
+            "description": "HTML Text of Blog",
+            "example": "<h1>Hello World</h1>"
+          },
+          "keywords": {
+            "description": "List of keywords",
+            "example": [
+              "Web app",
+              "Javascript",
+              "Nodejs",
+              "ExpressJs",
+              "Mysql"
+            ],
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["title", "content", "keywords"]
+      },
+      "CreateCommentDto": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string" },
+          "blogId": { "type": "number" }
+        },
+        "required": ["content", "blogId"]
+      },
+      "UpdateCommentDto": {
+        "type": "object",
+        "properties": {
+          "content": { "type": "string" },
+          "blogId": { "type": "number" }
+        }
+      }
+    }
+  },
+  "security": [{ "bearer": [] }]
+}

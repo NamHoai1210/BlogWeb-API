@@ -1,0 +1,13 @@
+services:
+  db:
+    image: mariadb:10.8
+    env_file: .env
+    ports:
+      - ${DATABASE_PORT}:${DATABASE_CONTAINER_PORT}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MySQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USER}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - ./docker/db/data:/var/lib/mysql
