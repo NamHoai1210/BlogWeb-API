@@ -5,19 +5,18 @@ $ npm install
 $ cp .env.default .env
 ```
 
-## Seed data
+## Generate Database
 
 ```bash
-$ npm run seed
+$ docker compose up -d
+$ npm run prisma:migrate
+$ npm run prisma:generate
 ```
 
 ## Running the app
 
 ```bash
-# db
-$ npm run docker:db
-
 # app
-$ npm run dev
+$ npm run start:dev
 ```# BlogWeb-API
 # BlogWeb-API
