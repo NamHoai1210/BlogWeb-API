@@ -17,10 +17,6 @@ import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { Roles } from 'src/auth/decorator/roles.decorator';
-import { RoleAdmin } from 'src/common/constant/roles';
-import { FindCommentDto } from './dto/find-comment.dto';
-import { CommentEntity } from './entities/comment.entity';
 import {
   LoggedUserEntity,
   LoggedUserRequest,

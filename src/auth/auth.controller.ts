@@ -8,6 +8,8 @@ import {
   BadRequestException,
   Req,
   UseGuards,
+  Redirect,
+  Res,
 } from '@nestjs/common'
 import {
   ApiInternalServerErrorResponse,
@@ -27,7 +29,10 @@ import { AuthGuard } from '@nestjs/passport';
 @Public()
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService
+
+    ) {}
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -35,15 +40,11 @@ export class AuthController {
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  async googleAuthRedirect(@Req() req):Promise<LoginEntity> {
+  async googleAuthRedirect(@Req() req, @Res() res) {
     const user = await this.authService.googleLogin(req)
     if (!user) throw new UnauthorizedException()
     const token = await this.authService.login(user)
-    const ret: LoginEntity = {
-      ...token,
-    }
-    ret.user = new UserEntity(user)
-    return ret;
+    return res.redirect(process.env.CLIENT_URL+`/login-result?accessToken=${token.accessToken}&refreshToken=${token.refreshToken}`);
   }
 
   @Post('login')

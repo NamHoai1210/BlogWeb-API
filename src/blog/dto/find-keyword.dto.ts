@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger'
-import {  IsArray, IsNumber, IsOptional, IsString } from 'class-validator'
+import {  IsNumber, IsOptional, IsString } from 'class-validator'
 
-export class FindBlogDto {
-  @IsNumber()
+export class FindKeywordDto {
+  @IsString()
   @IsOptional()
   @ApiProperty()
-  keyword?: number
+  key?: string
 
   @IsOptional()
   @IsString()
@@ -13,5 +13,5 @@ export class FindBlogDto {
 
   @IsOptional()
   @IsString()
-  pageSize?: string = '20'
+  pageSize?: string = '30'
 }

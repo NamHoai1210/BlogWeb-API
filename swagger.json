@@ -301,10 +301,11 @@
             "name": "keyword",
             "required": true,
             "in": "query",
-            "schema": { "type": "string" }
+            "schema": { "type": "number" }
           }
         ],
-        "responses": { "200": { "description": "" } }
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       },
       "post": {
         "operationId": "BlogController_createBlog",
@@ -317,7 +318,23 @@
             }
           }
         },
-        "responses": { "201": { "description": "" } }
+        "responses": { "201": { "description": "" } },
+        "tags": ["Blog"]
+      }
+    },
+    "/v1/blog/keyword": {
+      "get": {
+        "operationId": "BlogController_findKeyword",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       }
     },
     "/v1/blog/{id}": {
@@ -331,7 +348,8 @@
             "schema": { "type": "number" }
           }
         ],
-        "responses": { "200": { "description": "" } }
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       },
       "patch": {
         "operationId": "BlogController_editBlog",
@@ -351,7 +369,8 @@
             }
           }
         },
-        "responses": { "200": { "description": "" } }
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       },
       "delete": {
         "operationId": "BlogController_deleteBlog",
@@ -363,12 +382,13 @@
             "schema": { "type": "number" }
           }
         ],
-        "responses": { "200": { "description": "" } }
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       }
     },
-    "/v1/blog/me/{id}": {
-      "get": {
-        "operationId": "BlogController_findMe",
+    "/v1/blog/{id}/like": {
+      "post": {
+        "operationId": "BlogController_reaction",
         "parameters": [
           {
             "name": "id",
@@ -377,7 +397,47 @@
             "schema": { "type": "number" }
           }
         ],
-        "responses": { "200": { "description": "" } }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReactionDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["Blog"]
+      }
+    },
+    "/v1/blog/me": {
+      "get": {
+        "operationId": "BlogController_findMe",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FindBlogDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
+      }
+    },
+    "/v1/blog/me/{id}": {
+      "get": {
+        "operationId": "BlogController_findMeOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Blog"]
       }
     },
     "/v1/comment": {
@@ -545,6 +605,18 @@
           "newPassword": { "type": "string" }
         },
         "required": ["oldPassword", "newPassword"]
+      },
+      "ReactionDto": {
+        "type": "object",
+        "properties": {
+          "likeStatus": { "type": "number", "enum": [1, 0, -1], "example": 1 }
+        },
+        "required": ["likeStatus"]
+      },
+      "FindBlogDto": {
+        "type": "object",
+        "properties": { "keyword": { "type": "number" } },
+        "required": ["keyword"]
       },
       "CreateBlogDto": {
         "type": "object",
