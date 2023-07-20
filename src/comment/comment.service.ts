@@ -1,24 +1,37 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { PrismaService } from 'src/db/prisma.service';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
+import { Injectable, Logger } from '@nestjs/common'
+import { PrismaService } from 'src/db/prisma.service'
+import { CreateCommentDto } from './dto/create-comment.dto'
+import { UpdateCommentDto } from './dto/update-comment.dto'
 
 @Injectable()
 export class CommentService {
   constructor(private readonly prismaService: PrismaService) {}
-  private logger = new Logger(CommentService.name);
-  create(content: string, blogId: number, userId: number) {
-    return this.prismaService.comment.create({
-        data: {
-          content,
-          blogId,
-          userId,
+  private logger = new Logger(CommentService.name)
+  async create(content: string, blogId: number, userId: number) {
+    const { id } = await this.prismaService.comment.create({
+      data: {
+        content,
+        blogId,
+        userId,
+      },
+    })
+    return this.prismaService.comment.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        User: {
+          select: {
+            name: true,
+            avatar: true,
+          },
         },
-      });
-    }
+      },
+    })
+  }
 
   async findAll(content: string, page: number, pageSize: number) {
-    this.logger.log(content);
+    this.logger.log(content)
     const [total, items] = await this.prismaService.$transaction([
       this.prismaService.comment.count({
         where: {
@@ -43,20 +56,20 @@ export class CommentService {
         take: pageSize,
         skip: pageSize * (page - 1),
       }),
-    ]);
+    ])
     return {
       total,
       items,
-    };
+    }
   }
 
-  async findAllByBlog(blogId:number){
+  async findAllByBlog(blogId: number) {
     return this.prismaService.comment.findMany({
       where: {
         blogId,
-      }
+      },
     })
-  } 
+  }
 
   findOne(id: number) {
     return this.prismaService.comment.findUnique({
@@ -66,7 +79,7 @@ export class CommentService {
       include: {
         User: true,
       },
-    });
+    })
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {
@@ -77,7 +90,7 @@ export class CommentService {
       data: {
         content: updateCommentDto.content,
       },
-    });
+    })
   }
 
   remove(id: number) {
@@ -85,11 +98,11 @@ export class CommentService {
       where: {
         id,
       },
-    });
+    })
   }
 
   updateLikeCount(id: number, isLiked: boolean) {
-    const like = isLiked ? 1 : -1;
+    const like = isLiked ? 1 : -1
     return this.prismaService.comment.update({
       where: {
         id,
@@ -99,7 +112,7 @@ export class CommentService {
           increment: like,
         },
       },
-    });
+    })
   }
 
   async setLike(id: number, userId: number, isLiked: boolean) {
@@ -111,8 +124,8 @@ export class CommentService {
             commentId: id,
           },
         },
-      });
-      this.logger.log(reaction);
+      })
+      this.logger.log(reaction)
       if (!isLiked) {
         if (reaction) {
           return this.prismaService.commentReaction.delete({
@@ -122,7 +135,7 @@ export class CommentService {
                 commentId: id,
               },
             },
-          });
+          })
         }
       } else {
         if (!reaction) {
@@ -131,13 +144,12 @@ export class CommentService {
               userId,
               commentId: id,
             },
-          });
-
+          })
         }
       }
-      return null;
+      return null
     } catch (e) {
-      return null;
+      return null
     }
   }
 }

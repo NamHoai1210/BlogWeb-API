@@ -25,7 +25,7 @@ import { BlogModule } from './blog/blog.module';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '../..', 'public'),
+      rootPath: join(__dirname, '../', 'public'),
     }),
     ConfigModule.forRoot({
       isGlobal: true,
